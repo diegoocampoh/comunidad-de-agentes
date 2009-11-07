@@ -16,7 +16,7 @@ public class Main {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        //El rover no va a hacer el obligatorio porque tiene que ir al mera
+        //El rover no va a hacer el obligatorio porque tiene que ir a la pasiva
     }
 
 }
