@@ -14,7 +14,6 @@ import jade.content.schema.PrimitiveSchema;
 public final class PaperOntology extends Ontology implements PaperOntologyVocabulary {
 	
 	private static final PaperOntology instance = new PaperOntology();
-	
 	public static PaperOntology getInstance () {
 		return instance;
 	}
