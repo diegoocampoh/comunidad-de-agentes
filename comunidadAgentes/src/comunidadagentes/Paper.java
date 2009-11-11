@@ -12,6 +12,7 @@ import jade.proto.ContractNetResponder;
  */
 public class Paper extends Agent {
     protected void setup(){
+        //aa
         System.out.println("Inicializando servicios.");
         
         ServiceDescription serv= new ServiceDescription();
