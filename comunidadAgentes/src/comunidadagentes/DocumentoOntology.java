@@ -7,8 +7,10 @@ import jade.content.onto.OntologyException;
 import jade.content.schema.ConceptSchema;
 //import jade.content.schema.ObjectSchema;
 //import jade.content.schema.PredicateSchema;
+import jade.content.schema.ObjectSchema;
 import jade.content.schema.PredicateSchema;
 import jade.content.schema.PrimitiveSchema;
+import java.lang.String;
 
 
 public final class DocumentoOntology extends Ontology implements DocumentoInterfazVocabulario{
@@ -25,36 +27,39 @@ public final class DocumentoOntology extends Ontology implements DocumentoInterf
     }
 	
 	private DocumentoOntology() {
-		super(ONTOLOGY_NAME, BasicOntology.getInstance());
+        super(ONTOLOGY_NAME, BasicOntology.getInstance());
 		try {			
 			//define un nuevo concepto
 			add(new ConceptSchema(DOCUMENTO), Documento.class);
+            add(new ConceptSchema(RESULTADO), Resultado.class);
+
             add(new PredicateSchema(PROVEER), Proveer.class);
 			//add(new PredicateSchema(PROVEE), Provee.class);
 			
 			ConceptSchema documento = (ConceptSchema) getSchema(DOCUMENTO);
 			
 			//agrega un atributo de tipo string requerido
-			documento.add(TITULO, 
+			documento.add(DOCUMENTO_TITULO,
 					(PrimitiveSchema) getSchema(BasicOntology.STRING));
-			documento.add(AUTOR, 
+			documento.add(DOCUMENTO_AUTOR,
 					(PrimitiveSchema) getSchema(BasicOntology.STRING));
-                       	documento.add(CONTENIDO, 
+            documento.add(DOCUMENTO_CONTENIDO,
 					(PrimitiveSchema) getSchema(BasicOntology.STRING));
 
 			
-			/* PROVEEDOR:
-			PredicateSchema provides = (PredicateSchema) getSchema (PROVIDES);
-			provides.add(PROVIDES_PROVIDER, getSchema(SL0Vocabulary.AID));
-			provides.add(PROVIDES_PAPER, getSchema(PAPER));
+			
+			PredicateSchema proveer = (PredicateSchema) getSchema (PROVEER);
+		
+            proveer.add(PROVEER_KEYWORDS,
+					(ConceptSchema) getSchema(PROVEER_KEYWORDS),
+					1, ObjectSchema.UNLIMITED);
+
+            ConceptSchema resultado = (ConceptSchema) getSchema(RESULTADO);
+            resultado.add(RESULTADO_DOCS, (ConceptSchema) getSchema(DOCUMENTO),
+                    1, ObjectSchema.UNLIMITED);
+
 			
 			
-			// Defino el operador NOT de SL1 para que se utilice la clase NOT en lugar
-			// de un descriptor abstracto.
-			add(new PredicateSchema(SL1Vocabulary.NOT), Not.class);
-			PredicateSchema not = (PredicateSchema) getSchema(SL1Vocabulary.NOT);
-		  	not.add(SL1Vocabulary.NOT_WHAT, PredicateSchema.getBaseSchema());
-			*/
 		} catch (OntologyException e) {
 			throw new IllegalStateException ("Invalid ontology definition");
 		}

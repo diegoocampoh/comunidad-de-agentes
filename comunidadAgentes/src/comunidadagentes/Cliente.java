@@ -18,7 +18,9 @@ import jade.proto.ContractNetInitiator;
 import java.io.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Vector;
 
 public class Cliente extends Agent {
@@ -34,7 +36,7 @@ public class Cliente extends Agent {
 
         super.setup();
         getContentManager().registerLanguage(new SLCodec());
-		getContentManager().registerOntology(DocumentoOntology.getInstance());
+		getContentManager().registerOntology(DocumentoOntology.getInstance(),"DocumentoOntologia");
 
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -48,6 +50,7 @@ public class Cliente extends Agent {
         {
 
         }
+        args="250";
         if (!args.equals("")) {
             this.precionMaximo = Integer.parseInt(((String) args));
 
@@ -74,14 +77,26 @@ public class Cliente extends Agent {
                     }
                     //Protocolo que vamos a utilizar
                     mensajeCFP.setProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET);
-                    
 
                     // Indico la ontologia a usar en el mensajete
                     mensajeCFP.setOntology(DocumentoOntology.class.getName());
 
+                    //Indico el lenguaje
+                    mensajeCFP.setLanguage(new SLCodec().getName());
+
                     //Indicamos el tiempo que esperaremos por las ofertas.
                     mensajeCFP.setReplyByDate(new Date(System.currentTimeMillis() + 15000));
 
+                    List<String> frutas = (new ArrayList<String>());
+                    frutas.add("Carloten");
+                    
+                    Proveer provee = new Proveer();
+                    provee.setKeywords(frutas);
+
+
+                    getContentManager().fillContent(mensajeCFP, provee);
+
+               
                     //Se añade el comportamiento que manejará las ofertas.
                     this.addBehaviour(new ManejoOpciones(this, mensajeCFP));
                 }
