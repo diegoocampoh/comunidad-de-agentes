@@ -32,7 +32,7 @@ public final class PaperFinderAgent extends Agent {
 	@Override
 	protected void setup() {
 		super.setup();		
-		System.out.println (getName() + ": cre�ndose!");
+		System.out.println ("--------------------"+getAID()+" "+getName() + ": cre�ndose!");
 		addBehaviour(new FindPaper(paperTitle));
 	}
 
