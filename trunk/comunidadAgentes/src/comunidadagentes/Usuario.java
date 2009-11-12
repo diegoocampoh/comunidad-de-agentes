@@ -5,6 +5,7 @@ package comunidadagentes;
  * @author Administrador
  */
 
+import jade.content.lang.sl.SLCodec;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.domain.DFService;
@@ -16,7 +17,10 @@ import jade.proto.ContractNetInitiator;
 
 import java.util.Date;
 import java.util.Vector;
-import java.util.*;
+import jade.util.leap.ArrayList;
+import jade.util.leap.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Usuario extends Agent {
 
@@ -24,26 +28,49 @@ public class Usuario extends Agent {
     @Override
     protected void setup()
     {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        getContentManager().registerLanguage(new SLCodec());
+		getContentManager().registerOntology(DocumentoOntology.getInstance());
         //descripcion.addLanguages("mafioso");
         ServiceDescription servicio=new ServiceDescription();
         DFAgentDescription descripcion=new DFAgentDescription();
         descripcion.addServices(servicio);
         try
         {
+
+            List frutas = new ArrayList();
+            frutas.add("Carloten");
+
+            Proveer provee = new Proveer();
+            provee.setKeywords(frutas);
+
+
+
+
             ACLMessage plantilla=new ACLMessage(ACLMessage.CFP);
             plantilla.setProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET);
-            this.addBehaviour(new Comportamiento(this, plantilla));
+           
             DFAgentDescription[] resultados=DFService.search(this, descripcion);
             if(resultados.length>0)
             {
                 ACLMessage mensajeCFP = new ACLMessage(ACLMessage.CFP);
                 mensajeCFP.setProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET);
-                mensajeCFP.setContent("Dame esos libros loco!");
-                mensajeCFP.setReplyByDate(new Date(System.currentTimeMillis() + 15000));
+             
+                mensajeCFP.setReplyByDate(new Date(System.currentTimeMillis() + 1000));
+                mensajeCFP.setOntology(DocumentoOntology.getInstance().getName());
+                mensajeCFP.setLanguage(new SLCodec().getName());
+                getContentManager().fillContent(mensajeCFP, provee);
                 for(DFAgentDescription agente : resultados)
                 {
                     mensajeCFP.addReceiver(agente.getName());
                 }
+
+                this.addBehaviour(new Comportamiento(this, mensajeCFP));
+                
                 this.send(mensajeCFP);
             }
             
@@ -102,12 +129,22 @@ public class Usuario extends Agent {
             {
                 e.printStackTrace();
             }
-            List<Documento> papers=informe.getDocumentos();
-            for(Documento doc:papers)
-            {
+            List papers=informe.getDocumentos();
+            
+            for (int i = 0; i < papers.size(); i++) {
+                Documento doc = (Documento)papers.get(i);
                 System.out.println(doc.getTitulo());
             }
+                
+            
         }
+
+        @Override
+        protected void handleRefuse(ACLMessage refuse) {
+            super.handleRefuse(refuse);
+            System.out.println("Propuesta rechazada");
+        }
+
      }
 
 }

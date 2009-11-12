@@ -18,9 +18,10 @@ import jade.proto.ContractNetInitiator;
 import java.io.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
+
 import java.util.Date;
-import java.util.List;
+import jade.util.leap.ArrayList;
+import jade.util.leap.List;
 import java.util.Vector;
 
 public class Cliente extends Agent {
@@ -36,7 +37,7 @@ public class Cliente extends Agent {
 
         super.setup();
         getContentManager().registerLanguage(new SLCodec());
-		getContentManager().registerOntology(DocumentoOntology.getInstance(),"DocumentoOntologia");
+		getContentManager().registerOntology(DocumentoOntology.getInstance());
 
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -79,7 +80,7 @@ public class Cliente extends Agent {
                     mensajeCFP.setProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET);
 
                     // Indico la ontologia a usar en el mensajete
-                    mensajeCFP.setOntology(DocumentoOntology.class.getName());
+                    mensajeCFP.setOntology(DocumentoOntology.getInstance().getName());
 
                     //Indico el lenguaje
                     mensajeCFP.setLanguage(new SLCodec().getName());
@@ -87,7 +88,7 @@ public class Cliente extends Agent {
                     //Indicamos el tiempo que esperaremos por las ofertas.
                     mensajeCFP.setReplyByDate(new Date(System.currentTimeMillis() + 15000));
 
-                    List<String> frutas = (new ArrayList<String>());
+                    List frutas = new ArrayList();
                     frutas.add("Carloten");
                     
                     Proveer provee = new Proveer();

@@ -15,6 +15,7 @@ import jade.core.Profile;
 import jade.core.ProfileImpl;
 import jade.core.Runtime;
 import jade.util.leap.ArrayList;
+import jade.util.leap.List;
 import jade.wrapper.AgentContainer;
 import jade.wrapper.AgentController;
 import jade.wrapper.ControllerException;
@@ -45,15 +46,25 @@ public class Main {
 		try {
 			container.start();
 
-			//crear un nuevo agente en el contenedor e iniciarlo
+            AgentController proveedor = container.acceptNewAgent("Proveedor",cargarProvedor());
+            proveedor.start();
+
+            AgentController usuario = container.acceptNewAgent("Usuario", new Usuario());
+            usuario.start();
+
+			/*crear un nuevo agente en el contenedor e iniciarlo
 			AgentController autos = container.acceptNewAgent("Automotora",new Autos ());
             autos.start();
+             */
 			/*AgentController paper=container.acceptNewAgent("Paper", new Paper());
-            paper.start();*/
+            paper.start();
             AgentController cliente = container.acceptNewAgent("Cliente",new Cliente ());
-			cliente.start();
+			cliente.start();*/
             /*AgentController usuario=container.acceptNewAgent("Usuario", new Usuario());
             usuario.start();*/
+
+
+
 
 		} catch (StaleProxyException e) {
 			e.printStackTrace();
@@ -61,5 +72,16 @@ public class Main {
 			e.printStackTrace();
 		}
 	}
+
+    private static ProveedorDeDocumentos cargarProvedor()
+    {
+
+        ProveedorDeDocumentos proveedor = new ProveedorDeDocumentos("Fruta");
+        proveedor.agregarDocumento(new Documento("Fruteando", "Rover", "NULL"));
+        proveedor.agregarDocumento(new Documento("Fruteando reloaded", "Rover and Cia.", "NULL"));
+
+        return proveedor;
+
+    }
 
 }
