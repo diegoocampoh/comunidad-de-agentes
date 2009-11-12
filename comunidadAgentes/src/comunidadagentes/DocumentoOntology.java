@@ -7,20 +7,29 @@ import jade.content.onto.OntologyException;
 import jade.content.schema.ConceptSchema;
 //import jade.content.schema.ObjectSchema;
 //import jade.content.schema.PredicateSchema;
+import jade.content.schema.PredicateSchema;
 import jade.content.schema.PrimitiveSchema;
 
 
 public final class DocumentoOntology extends Ontology implements DocumentoInterfazVocabulario{
-	private static final DocumentoOntology instance = new DocumentoOntology();
-	public static DocumentoOntology getInstance () {
-		return instance;
-	}
+
+    /**
+     * Patron sigleton
+     */
+    private static DocumentoOntology _instance;
+    public static DocumentoOntology getInstance() {
+
+        if (_instance == null)
+            _instance = new DocumentoOntology();
+        return _instance;
+    }
 	
-	public DocumentoOntology() {
+	private DocumentoOntology() {
 		super(ONTOLOGY_NAME, BasicOntology.getInstance());
 		try {			
 			//define un nuevo concepto
 			add(new ConceptSchema(DOCUMENTO), Documento.class);
+            add(new PredicateSchema(PROVEER), Proveer.class);
 			//add(new PredicateSchema(PROVEE), Provee.class);
 			
 			ConceptSchema documento = (ConceptSchema) getSchema(DOCUMENTO);
@@ -32,6 +41,7 @@ public final class DocumentoOntology extends Ontology implements DocumentoInterf
 					(PrimitiveSchema) getSchema(BasicOntology.STRING));
                        	documento.add(CONTENIDO, 
 					(PrimitiveSchema) getSchema(BasicOntology.STRING));
+
 			
 			/* PROVEEDOR:
 			PredicateSchema provides = (PredicateSchema) getSchema (PROVIDES);

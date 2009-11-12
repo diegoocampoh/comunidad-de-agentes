@@ -5,6 +5,8 @@
 
 package comunidadagentes;
 
+import jade.content.ContentManager;
+import jade.content.lang.sl.SLCodec;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.domain.DFService;
@@ -27,7 +29,13 @@ public class Cliente extends Agent {
     //Precio máximo que se pagará por un coche.
     private int precionMaximo;
 
+    @Override
     protected void setup() {
+
+        super.setup();
+        getContentManager().registerLanguage(new SLCodec());
+		getContentManager().registerOntology(DocumentoOntology.getInstance());
+
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String args="";
@@ -64,9 +72,12 @@ public class Cliente extends Agent {
                     for (DFAgentDescription agente:resultados) {
                         mensajeCFP.addReceiver(agente.getName());
                     }
-            //Protocolo que vamos a utilizar
+                    //Protocolo que vamos a utilizar
                     mensajeCFP.setProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET);
-                    mensajeCFP.setContent("Busco coche, ¿proponeis precios?");
+                    
+
+                    // Indico la ontologia a usar en el mensajete
+                    mensajeCFP.setOntology(DocumentoOntology.class.getName());
 
                     //Indicamos el tiempo que esperaremos por las ofertas.
                     mensajeCFP.setReplyByDate(new Date(System.currentTimeMillis() + 15000));
