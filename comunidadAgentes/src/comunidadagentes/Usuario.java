@@ -24,30 +24,37 @@ import java.util.Vector;
 
 public class Usuario extends Agent {
 
+
+    @Override
     protected void setup()
     {
-        DFAgentDescription descripcion=new DFAgentDescription();
         //descripcion.addLanguages("mafioso");
         ServiceDescription servicio=new ServiceDescription();
+        DFAgentDescription descripcion=new DFAgentDescription();
         descripcion.addServices(servicio);
         try
         {
+            ACLMessage plantilla=new ACLMessage(ACLMessage.CFP);
+            plantilla.setProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET);
+            this.addBehaviour(new Comportamiento(this, plantilla));
             DFAgentDescription[] resultados=DFService.search(this, descripcion);
             if(resultados.length>0)
             {
                 ACLMessage mensajeCFP = new ACLMessage(ACLMessage.CFP);
+                mensajeCFP.setProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET);
+                mensajeCFP.setContent("Dame esos libros loco!");
+                mensajeCFP.setReplyByDate(new Date(System.currentTimeMillis() + 15000));
                 for(DFAgentDescription agente : resultados)
                 {
                     mensajeCFP.addReceiver(agente.getName());
                 }
+                this.send(mensajeCFP);
             }
-            ACLMessage plantilla=new ACLMessage(ACLMessage.CFP);
-            plantilla.setProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET);
-            this.addBehaviour(new Comportamiento(this, plantilla));
+            
         }
         catch(Exception e)
         {
-            System.out.println("se rompio todo");
+            e.printStackTrace();
         }
     }
 
