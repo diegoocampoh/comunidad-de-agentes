@@ -1,13 +1,14 @@
 package comunidadagentes;
 import jade.content.Concept;
-import java.util.List;
+import jade.util.leap.ArrayList;
+import jade.util.leap.List;
 
 public final class Documento implements Concept {
 
 	private String titulo;	
 	private String autor;
         private String contenido;
-	private List<String> categorias;
+	private List categorias;
 	public Documento() {
 		super();		
 	}	
@@ -19,6 +20,7 @@ public final class Documento implements Concept {
 		this.titulo = titlulo;
 		this.autor=autor;
                 this.contenido=contenido;
+        this.categorias = new ArrayList();
         }
        
         public void setAutor(String autor) {
@@ -43,10 +45,10 @@ public final class Documento implements Concept {
 		return contenido;
 	}
         
-        public void putCategoria(String categoria) {
-		categorias.add(categoria);
+    public void putCategoria(String categoria) {
+    categorias.add(categoria);
 	}
-	public List<String> getCategorias() {
+	public List getCategorias() {
 		return categorias;
 	}
 

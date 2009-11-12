@@ -1,12 +1,16 @@
 package comunidadagentes;
+import jade.content.ContentElement;
 import jade.content.lang.Codec.CodecException;
+import jade.content.lang.sl.SLCodec;
 import jade.content.onto.OntologyException;
 import jade.core.*;
 import jade.domain.FIPAAgentManagement.*;
 import jade.domain.*;
 import jade.lang.acl.*;
 import jade.proto.ContractNetResponder;
-import java.util.*;
+
+import jade.util.leap.ArrayList;
+import jade.util.leap.List;
 
 /**
  *
@@ -14,33 +18,41 @@ import java.util.*;
  */
 public class ProveedorDeDocumentos extends Agent {
 
-    List<Documento> papers=new ArrayList<Documento>();
+
+    List papers=new ArrayList();
     String categoria;
-    private List<Documento> busqueda(List<String> keywords)
+    private List busqueda(List keywords)
     {
-        List<Documento> resultado=new ArrayList<Documento>();
-        for(Documento paper:papers)
-        {
-            for(String keyword:keywords)
-            {
-                if(paper.esCategoria(keyword))
+        List resultado=new ArrayList();
+
+        for (int i = 0; i < papers.size(); i++) {
+            Documento paper=(Documento) papers.get(i);
+
+             for (int j = 0; j < keywords.size(); j++) {
+                String keyword=(String) keywords.get(j);
+
+                 if(paper.esCategoria(keyword))
                 {
                     resultado.add(paper);
                 }
+
             }
+
         }
+      
         return resultado;
     }
 
-    public String puntaje(List<String> palabra)
+    public String puntaje(List palabra)
     {
-        List<Documento> resultado=busqueda(palabra);
+        List resultado=busqueda(palabra);
         return resultado.size()+"";
     }
     
     public ProveedorDeDocumentos(String categoria)
     {
         this.categoria=categoria;
+
     }
 
     public void agregarDocumento(Documento nuevoDocumento)
@@ -50,6 +62,9 @@ public class ProveedorDeDocumentos extends Agent {
 
 
     protected void setup(){
+        getContentManager().registerLanguage(new SLCodec());
+		getContentManager().registerOntology(DocumentoOntology.getInstance());
+
         System.out.println("Inicializando servicios.");
         ServiceDescription serv= new ServiceDescription();
         serv.setName("Busqueda de papers");
@@ -63,7 +78,13 @@ public class ProveedorDeDocumentos extends Agent {
             exception.printStackTrace();
         }
         MessageTemplate plantilla = ContractNetResponder.createMessageTemplate(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET);
-        this.addBehaviour(new DevolverPaper(this,plantilla));
+
+        MessageTemplate template = MessageTemplate.and(
+                                        MessageTemplate.MatchOntology(DocumentoOntology.getInstance().getName()),
+                                        MessageTemplate.and(MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET),
+                                        MessageTemplate.MatchLanguage(new SLCodec().getName())));
+
+        this.addBehaviour(new DevolverPaper(this,template));
     }
     
     private class DevolverPaper extends ContractNetResponder {
@@ -76,16 +97,36 @@ public class ProveedorDeDocumentos extends Agent {
             System.out.println("Peticion recibida 2");
             ACLMessage respuesta=cfp.createReply();
             respuesta.setPerformative(ACLMessage.PROPOSE);
-            Proveer consulta=new Proveer();
-            try
+
+            ContentElement ce = null;
+			try {
+				ce = myAgent.getContentManager().extractContent(cfp);
+			} catch (CodecException e1) {
+				e1.printStackTrace();
+			} catch (OntologyException e1) {
+				e1.printStackTrace();
+			}
+
+			if (ce == null || !Proveer.class.isInstance(ce)) {
+				System.out.println (myAgent.getName() + ": Mensaje no entendido "+cfp.getContent());
+                ACLMessage reply = cfp.createReply();
+                reply.setPerformative(ACLMessage.NOT_UNDERSTOOD);
+                myAgent.send(reply);
+				return reply;
+			}
+
+			Proveer query = (Proveer) ce;
+            String puntaje=puntaje(query.getKeywords());
+
+            if(puntaje.equals("0"))
             {
-                consulta=(Proveer)cfp.getContentObject();
+                //El puntaje es 0, por lo tanto, no tengo documentos para ofrecer.
+
+                System.out.printf("Proveedor: No tengo nada que ofertar ", this.myAgent.getLocalName());
+                throw new RefuseException("No puedo crear propuesta.");
+
             }
-            catch(UnreadableException e)
-            {
-                e.printStackTrace();
-            }
-            String puntaje=puntaje(consulta.getKeywords());
+            respuesta.setContent(String.valueOf(puntaje));
             return respuesta;
         }
 
@@ -120,6 +161,8 @@ public class ProveedorDeDocumentos extends Agent {
             }
             return respuesta;
         }
-    
+
+        
+   
     }
 }

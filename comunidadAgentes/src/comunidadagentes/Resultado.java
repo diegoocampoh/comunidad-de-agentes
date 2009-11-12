@@ -7,7 +7,8 @@ package comunidadagentes;
 
 import jade.content.Concept;
 import jade.content.ContentElement;
-import java.util.List;
+import jade.util.leap.ArrayList;
+import jade.util.leap.List;
 
 /**
  *
@@ -15,13 +16,22 @@ import java.util.List;
  */
 public class Resultado implements Concept, ContentElement{
 
-    private List<Documento> documentos;
+    private List documentos;
 
     public Resultado() {
     }
 
-    public Resultado(List documentos) {
-        this.documentos = documentos;
+    public Resultado(Documento[] documentos) {
+
+        this.documentos = new ArrayList(documentos.length);
+		for (int i = 0; i < documentos.length; i++) {
+			this.documentos.add(documentos[i]);
+		}
+
+    }
+
+    Resultado(List busqueda) {
+        this.documentos = busqueda;
     }
 
     public List getDocumentos() {

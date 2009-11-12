@@ -7,8 +7,8 @@ package comunidadagentes;
 
 import jade.content.ContentElement;
 import jade.content.Predicate;
-import java.util.ArrayList;
-import java.util.List;
+import jade.util.leap.ArrayList;
+import jade.util.leap.List;
 
 /**
  * Clase utilizada como predicado.
@@ -20,7 +20,7 @@ import java.util.List;
  */
 public class Proveer implements Predicate, ContentElement {
 
-    private List<String> keywords = new ArrayList<String>();
+    private List keywords = new ArrayList();
    
 
     public Proveer()
@@ -28,17 +28,22 @@ public class Proveer implements Predicate, ContentElement {
 
 
     }
-    public Proveer(List<String> keywords)
+    public Proveer(String[] keywords)
     {
         
+
+        this.keywords = new ArrayList(keywords.length);
+		for (int i = 0; i < keywords.length; i++) {
+			this.keywords.add(keywords[i]);
+		}
         
     }
 
-    public List<String> getKeywords() {
+    public List getKeywords() {
         return keywords;
     }
 
-    public void setKeywords(List<String> keywords) {
+    public void setKeywords(List keywords) {
         this.keywords = keywords;
     }
 

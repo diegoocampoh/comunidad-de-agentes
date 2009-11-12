@@ -51,7 +51,7 @@ public final class DocumentoOntology extends Ontology implements DocumentoInterf
 			PredicateSchema proveer = (PredicateSchema) getSchema (PROVEER);
 		
             proveer.add(PROVEER_KEYWORDS,
-					(ConceptSchema) getSchema(PROVEER_KEYWORDS),
+					(PrimitiveSchema) getSchema(BasicOntology.STRING),
 					1, ObjectSchema.UNLIMITED);
 
             ConceptSchema resultado = (ConceptSchema) getSchema(RESULTADO);
