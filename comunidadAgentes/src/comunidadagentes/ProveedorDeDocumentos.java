@@ -1,4 +1,6 @@
 package comunidadagentes;
+import jade.content.lang.Codec.CodecException;
+import jade.content.onto.OntologyException;
 import jade.core.*;
 import jade.domain.FIPAAgentManagement.*;
 import jade.domain.*;
@@ -83,7 +85,6 @@ public class ProveedorDeDocumentos extends Agent {
             {
                 e.printStackTrace();
             }
-            
             respuesta.setContent(puntaje(consulta.getKeywords()));
             return respuesta;
         }
@@ -95,6 +96,7 @@ public class ProveedorDeDocumentos extends Agent {
         protected ACLMessage prepareResultNotification(ACLMessage cfp, ACLMessage propose, ACLMessage accept) throws FailureException {
             Proveer consulta=new Proveer();
             ACLMessage respuesta=accept.createReply();
+            respuesta.setPerformative(ACLMessage.INFORM);
             try
             {
                 consulta=(Proveer)cfp.getContentObject();
@@ -103,7 +105,20 @@ public class ProveedorDeDocumentos extends Agent {
             {
                 e.printStackTrace();
             }
-            respuesta.setContentObject();
+            Resultado resultado=new Resultado(busqueda(consulta.getKeywords()));
+            try
+            {
+                myAgent.getContentManager().fillContent(respuesta, resultado);
+            }
+            catch(OntologyException e)
+            {
+                e.printStackTrace();
+            }
+            catch(CodecException e)
+            {
+                e.printStackTrace();
+            }
+            return respuesta;
         }
     
     }
