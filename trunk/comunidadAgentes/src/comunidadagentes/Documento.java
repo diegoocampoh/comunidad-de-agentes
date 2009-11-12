@@ -49,6 +49,11 @@ public final class Documento implements Concept {
 	public List<String> getCategorias() {
 		return categorias;
 	}
+
+    public Boolean esCategoria(String categoria)
+    {
+        return categorias.contains(categoria);
+    }
         
 
 }

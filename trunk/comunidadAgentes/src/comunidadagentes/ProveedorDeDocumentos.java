@@ -12,37 +12,46 @@ import java.util.*;
  */
 public class ProveedorDeDocumentos extends Agent {
 
-    List<String> papers=new ArrayList<String>();
-
-    private List<String> busqueda(String palabra)
+    List<Documento> papers=new ArrayList<Documento>();
+    String categoria;
+    private List<Documento> busqueda(List<String> keywords)
     {
-        List<String> resultado=new ArrayList<String>();
-        for(String paper:papers)
+        List<Documento> resultado=new ArrayList<Documento>();
+        for(Documento paper:papers)
         {
-            if(paper.contains(palabra))
+            for(String keyword:keywords)
             {
-                resultado.add(paper);
+                if(paper.esCategoria(keyword))
+                {
+                    resultado.add(paper);
+                }
             }
         }
         return resultado;
     }
 
-    public String puntaje(String palabra)
+    public String puntaje(List<String> palabra)
     {
-        List<String> resultado=busqueda(palabra);
+        List<Documento> resultado=busqueda(palabra);
         return resultado.size()+"";
     }
+    
+    public ProveedorDeDocumentos(String categoria)
+    {
+        this.categoria=categoria;
+    }
+
+    public void agregarDocumento(Documento nuevoDocumento)
+    {
+        papers.add(nuevoDocumento);
+    }
+
 
     protected void setup(){
         System.out.println("Inicializando servicios.");
-
-        papers.add("gozando con java");
-        papers.add("gozando 2.0");
-        papers.add("La programacion caótica");
-        papers.add("Ing. Alejandro Roverano");
         ServiceDescription serv= new ServiceDescription();
         serv.setName("Busqueda de papers");
-        serv.setType("Papers");
+        serv.setType(categoria);
         DFAgentDescription descrip = new DFAgentDescription();
         descrip.setName(getAID());
         descrip.addServices(serv);
@@ -65,24 +74,37 @@ public class ProveedorDeDocumentos extends Agent {
             System.out.println("Peticion recibida 2");
             ACLMessage respuesta=cfp.createReply();
             respuesta.setPerformative(ACLMessage.PROPOSE);
-            respuesta.setContent(puntaje(cfp.getContent()));
+            Proveer consulta=new Proveer();
+            try
+            {
+                consulta=(Proveer)cfp.getContentObject();
+            }
+            catch(UnreadableException e)
+            {
+                e.printStackTrace();
+            }
+            
+            respuesta.setContent(puntaje(consulta.getKeywords()));
             return respuesta;
         }
 
-        @Override
-        protected ACLMessage handleCfp(ACLMessage arg0) throws RefuseException, FailureException, NotUnderstoodException {
-            System.out.println("Peticion recibida 1");
-            return super.handleCfp(arg0);
-        }
+
 
 
         @Override
-        protected ACLMessage prepareResultNotification(ACLMessage arg0, ACLMessage arg1, ACLMessage arg2) throws FailureException {
-            return super.prepareResultNotification(arg0, arg1, arg2);
+        protected ACLMessage prepareResultNotification(ACLMessage cfp, ACLMessage propose, ACLMessage accept) throws FailureException {
+            Proveer consulta=new Proveer();
+            ACLMessage respuesta=accept.createReply();
+            try
+            {
+                consulta=(Proveer)cfp.getContentObject();
+            }
+            catch(UnreadableException e)
+            {
+                e.printStackTrace();
+            }
+            respuesta.setContentObject();
         }
-
-
-
     
     }
 }

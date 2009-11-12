@@ -6,6 +6,8 @@ public interface DocumentoInterfazVocabulario {
 	String CONTENIDO = "Contenido";
 	String TITULO = "Titulo";
 	String AUTOR= "Autor";
+    String CATEGORIAS="Categorias";
+    String CATEGORIA="Categoria";
 
 
 }
