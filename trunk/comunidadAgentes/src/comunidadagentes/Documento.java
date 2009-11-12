@@ -1,12 +1,13 @@
 package comunidadagentes;
 import jade.content.Concept;
+import java.util.List;
 
 public final class Documento implements Concept {
 
 	private String titulo;	
 	private String autor;
         private String contenido;
-	
+	private List<String> categorias;
 	public Documento() {
 		super();		
 	}	
@@ -41,5 +42,13 @@ public final class Documento implements Concept {
 	public String getContenido() {
 		return contenido;
 	}
+        
+        public void putCategoria(String categoria) {
+		categorias.add(categoria);
+	}
+	public List<String> getCategorias() {
+		return categorias;
+	}
+        
 
 }
