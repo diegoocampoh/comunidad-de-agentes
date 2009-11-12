@@ -6,13 +6,14 @@
 package comunidadagentes;
 
 import jade.content.Concept;
+import jade.content.ContentElement;
 import java.util.List;
 
 /**
  *
  * @author Diego
  */
-public class Resultado implements Concept{
+public class Resultado implements Concept, ContentElement{
 
     private List<Documento> documentos;
 
