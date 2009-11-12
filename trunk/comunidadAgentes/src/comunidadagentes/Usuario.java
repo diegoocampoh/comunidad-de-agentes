@@ -16,6 +16,7 @@ import jade.proto.ContractNetInitiator;
 
 import java.util.Date;
 import java.util.Vector;
+import java.util.*;
 
 public class Usuario extends Agent {
 
@@ -61,10 +62,51 @@ public class Usuario extends Agent {
             super(myAgent, plantilla);
         }
 
+        @Override
+        protected void handleAllResponses(Vector responses, Vector acceptances) {
+            int mejorOferta=0;
+            ACLMessage mensajeMejorOferta=null;
+            for(Object respuestaObject:responses)
+            {
+                ACLMessage respuesta=(ACLMessage) respuestaObject;
+                ACLMessage contraRespuesta=null;
+                if(respuesta.getPerformative()==ACLMessage.PROPOSE)
+                {
+                    contraRespuesta=respuesta.createReply();
+                    contraRespuesta.setPerformative(ACLMessage.REJECT_PROPOSAL);
+                    acceptances.add(contraRespuesta);
+                }
+                String ofertaString=respuesta.getContent();
+
+                int oferta=Integer.getInteger(ofertaString);
+                if(oferta>mejorOferta)
+                {
+                    mejorOferta=oferta;
+                    mensajeMejorOferta=contraRespuesta;
+                }
+            }
+            if(mensajeMejorOferta!=null)
+            {
+                mensajeMejorOferta.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
+            }
+        }
 
         @Override
-        protected void handlePropose(ACLMessage arg0, Vector arg1) {
-            System.out.println(arg0.getContent());
+        protected void handleInform(ACLMessage inform) {
+            Resultado informe=null;
+            try
+            {
+                informe=(Resultado) inform.getContentObject();
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+            }
+            List<Documento> papers=informe.getDocumentos();
+            for(Documento doc:papers)
+            {
+                System.out.println(doc.getTitulo());
+            }
         }
      }
 

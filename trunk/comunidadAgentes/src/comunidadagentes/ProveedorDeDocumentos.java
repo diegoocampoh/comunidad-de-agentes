@@ -85,7 +85,7 @@ public class ProveedorDeDocumentos extends Agent {
             {
                 e.printStackTrace();
             }
-            respuesta.setContent(puntaje(consulta.getKeywords()));
+            String puntaje=puntaje(consulta.getKeywords());
             return respuesta;
         }
 
