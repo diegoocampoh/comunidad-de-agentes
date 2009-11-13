@@ -61,6 +61,7 @@ public class ProveedorDeDocumentos extends Agent {
     }
 
 
+    @Override
     protected void setup(){
         getContentManager().registerLanguage(new SLCodec());
 		getContentManager().registerOntology(DocumentoOntology.getInstance());
@@ -72,8 +73,10 @@ public class ProveedorDeDocumentos extends Agent {
         DFAgentDescription descrip = new DFAgentDescription();
         descrip.setName(getAID());
         descrip.addServices(serv);
+        
         try {
             DFService.register(this, descrip);
+
         } catch (FIPAException exception) {
             exception.printStackTrace();
         }
@@ -123,7 +126,10 @@ public class ProveedorDeDocumentos extends Agent {
                 //El puntaje es 0, por lo tanto, no tengo documentos para ofrecer.
 
                 System.out.printf("Proveedor: No tengo nada que ofertar ", this.myAgent.getLocalName());
-                throw new RefuseException("No puedo crear propuesta.");
+                ACLMessage refuse = cfp.createReply();
+                refuse.setPerformative(ACLMessage.REFUSE);
+                return refuse;
+//                throw new RefuseException("No puedo crear propuesta.");
 
             }
             respuesta.setContent(String.valueOf(puntaje));
