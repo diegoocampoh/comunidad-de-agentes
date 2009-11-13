@@ -78,6 +78,7 @@ public class Main {
 
         ProveedorDeDocumentos proveedor = new ProveedorDeDocumentos("Fruta");
         proveedor.agregarDocumento(new Documento("Fruteando", "Rover", "NULL"));
+        
         proveedor.agregarDocumento(new Documento("Fruteando reloaded", "Rover and Cia.", "NULL"));
 
         return proveedor;

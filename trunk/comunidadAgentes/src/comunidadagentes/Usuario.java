@@ -29,7 +29,7 @@ public class Usuario extends Agent {
     protected void setup()
     {
         try {
-            Thread.sleep(1000);
+            Thread.sleep(100);
         } catch (InterruptedException ex) {
             Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -43,7 +43,7 @@ public class Usuario extends Agent {
         {
 
             List frutas = new ArrayList();
-            frutas.add("Carloten");
+            frutas.add("Fruteando");
 
             Proveer provee = new Proveer();
             provee.setKeywords(frutas);
@@ -55,12 +55,13 @@ public class Usuario extends Agent {
             plantilla.setProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET);
            
             DFAgentDescription[] resultados=DFService.search(this, descripcion);
+ 
             if(resultados.length>0)
             {
                 ACLMessage mensajeCFP = new ACLMessage(ACLMessage.CFP);
                 mensajeCFP.setProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET);
              
-                mensajeCFP.setReplyByDate(new Date(System.currentTimeMillis() + 1000));
+                mensajeCFP.setReplyByDate(new Date(System.currentTimeMillis() + 15000));
                 mensajeCFP.setOntology(DocumentoOntology.getInstance().getName());
                 mensajeCFP.setLanguage(new SLCodec().getName());
                 getContentManager().fillContent(mensajeCFP, provee);
@@ -71,7 +72,7 @@ public class Usuario extends Agent {
 
                 this.addBehaviour(new Comportamiento(this, mensajeCFP));
                 
-                this.send(mensajeCFP);
+                //this.send(mensajeCFP);
             }
             
         }
@@ -89,6 +90,7 @@ public class Usuario extends Agent {
             super(myAgent, plantilla);
         }
 
+        
         @Override
         protected void handleAllResponses(Vector responses, Vector acceptances) {
             int mejorOferta=0;
@@ -97,6 +99,9 @@ public class Usuario extends Agent {
             {
                 ACLMessage respuesta=(ACLMessage) respuestaObject;
                 ACLMessage contraRespuesta=null;
+
+                if (respuesta.getPerformative()==ACLMessage.REFUSE) break;
+
                 if(respuesta.getPerformative()==ACLMessage.PROPOSE)
                 {
                     contraRespuesta=respuesta.createReply();
