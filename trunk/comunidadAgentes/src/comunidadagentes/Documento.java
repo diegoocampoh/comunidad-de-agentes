@@ -7,6 +7,10 @@ import java.util.Map;
 
 public final class Documento implements Concept {
 
+    public void setPuntajes(Map<String, Double> puntajes) {
+        this.puntajes = puntajes;
+    }
+
 	private String titulo;	
 	private String autor;
     private String contenido;
@@ -20,8 +24,12 @@ public final class Documento implements Concept {
 	}	
 	
 	/**
-	 * Constructor de documentos
-	 */
+     *
+     * @param titlulo
+     * @param autor
+     * @param contenido - Ruta al archivo relativa a la carpeta donde se encuentran
+     * los archivos PHP
+     */
 	public Documento(String titlulo, String autor, String contenido) {
 		this.titulo = titlulo;
 		this.autor=autor;
@@ -77,6 +85,14 @@ public final class Documento implements Concept {
     public Double get(Object key) {
         return puntajes.get(key);
     }
+
+    @Override
+    public String toString() {
+        return "Titulo: "+ titulo+"\n" +
+                "Autor: "+ autor+"\n"+
+                "Contenido: "+contenido+ "\n";
+    }
+
     
         
 

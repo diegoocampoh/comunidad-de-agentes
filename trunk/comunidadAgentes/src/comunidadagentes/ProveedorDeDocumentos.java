@@ -1,4 +1,5 @@
 package comunidadagentes;
+import comunicacionphp.GeneradorIndices;
 import jade.content.ContentElement;
 import jade.content.lang.Codec.CodecException;
 import jade.content.lang.sl.SLCodec;
@@ -22,6 +23,8 @@ import java.util.logging.Logger;
  */
 public class ProveedorDeDocumentos extends Agent {
 
+
+    GeneradorIndices generadorIndices= new GeneradorIndices();
 
     List papers=new ArrayList();
     List resultadoUltimaBusqueda = new ArrayList();
@@ -116,11 +119,14 @@ public class ProveedorDeDocumentos extends Agent {
     {
         this.categoria=categoria;
 
+
     }
 
     public void agregarDocumento(Documento nuevoDocumento)
     {
         papers.add(nuevoDocumento);
+        nuevoDocumento.setPuntajes(generadorIndices.generarIndices(nuevoDocumento.getContenido()));
+
     }
 
 

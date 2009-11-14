@@ -72,11 +72,11 @@ public class Main {
         ProveedorDeDocumentos proveedor = new ProveedorDeDocumentos("Fruta");
         proveedor.agregarDocumento(new Documento("Fruteando", "Rover", "NULL"));
 
-        Documento stub = new Documento("Fruteando reloaded", "Rover and Cia.", "NULL");
-        stub.addPuntajeAPalabra("FRUTA", 100d);
+        Documento stub = new Documento("Fruteando reloaded", "Rover & Cia.", "documentoPosta.txt");
+  
 
-        Documento stub2 = new Documento("Carloten y sus sueños depravados con Floppy", "Rover and Cia.", "NULL");
-        stub2.addPuntajeAPalabra("FRUTA", 50d);
+        Documento stub2 = new Documento("Carloten", "Rover and Cia.", "documento.txt");
+      
 
         proveedor.agregarDocumento(stub2);
         proveedor.agregarDocumento(stub);
