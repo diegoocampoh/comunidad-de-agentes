@@ -5,7 +5,6 @@
 
 package comunidadagentes;
 
-import jade.content.ContentManager;
 import jade.content.lang.sl.SLCodec;
 import jade.core.AID;
 import jade.core.Agent;

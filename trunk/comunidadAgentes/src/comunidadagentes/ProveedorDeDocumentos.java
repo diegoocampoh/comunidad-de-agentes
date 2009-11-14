@@ -11,6 +11,10 @@ import jade.proto.ContractNetResponder;
 
 import jade.util.leap.ArrayList;
 import jade.util.leap.List;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -20,7 +24,25 @@ public class ProveedorDeDocumentos extends Agent {
 
 
     List papers=new ArrayList();
+    List resultadoUltimaBusqueda = new ArrayList();
+
+    public List getResultadoUltimaBusqueda() {
+        return resultadoUltimaBusqueda;
+    }
+
+    public void setResultadoUltimaBusqueda(List resultadoUltimaBusqueda) {
+        this.resultadoUltimaBusqueda = resultadoUltimaBusqueda;
+    }
+
     String categoria;
+
+
+    /**
+     * Dadas las categorias pasadas por parámetro, retorna todos aquellos
+     * documentos en los cuales se encuentran los papers.
+     * @param keywords - Lista de palabras ingresadas en la consulta
+     * @return Lista de papers en los que estan las keywords
+     */
     private List busqueda(List keywords)
     {
         List resultado=new ArrayList();
@@ -43,10 +65,51 @@ public class ProveedorDeDocumentos extends Agent {
         return resultado;
     }
 
+    /**
+     *
+     * @param palabra
+     * @return
+     */
     public String puntaje(List palabra)
-    {
-        List resultado=busqueda(palabra);
-        return resultado.size()+"";
+    {   
+        int puntajeMaximo = 0;
+        int puntajeAcumulado;
+        List resultadosOrdenados = new ArrayList();
+        java.util.List<Puntaje> listaPuntajeada = new java.util.ArrayList<Puntaje>();
+       
+        for (int i = 0; i < papers.size(); i++) {
+            Documento doc = (Documento)papers.get(i);
+
+            puntajeAcumulado=0;
+            for (int j = 0; j < palabra.size();j++) {
+                String palabraObtenida =(String) palabra.get(j);
+
+                if (doc.get(palabraObtenida)==null)
+                {
+                    continue;
+                }
+
+                puntajeAcumulado+=doc.get(palabraObtenida);
+                
+                if(puntajeAcumulado>puntajeMaximo)
+                    puntajeMaximo=puntajeAcumulado;
+
+            }
+
+            if (puntajeAcumulado != 0){
+                listaPuntajeada.add(new Puntaje(puntajeAcumulado, doc));
+            }
+            
+        }
+
+        Collections.sort(listaPuntajeada);
+        for (Puntaje puntaje : listaPuntajeada) {
+            resultadoUltimaBusqueda.add(puntaje.getDoc());
+
+        }
+
+        return String.valueOf(puntajeMaximo);
+
     }
     
     public ProveedorDeDocumentos(String categoria)
@@ -89,6 +152,12 @@ public class ProveedorDeDocumentos extends Agent {
 
         this.addBehaviour(new DevolverPaper(this,template));
     }
+
+    private int calcularPuntaje(Documento doc, List palabra) {
+
+
+        return 0;
+    }
     
     private class DevolverPaper extends ContractNetResponder {
         public DevolverPaper(Agent agente, MessageTemplate plantilla) {
@@ -97,6 +166,9 @@ public class ProveedorDeDocumentos extends Agent {
 
         @Override
         protected ACLMessage prepareResponse(ACLMessage cfp) throws NotUnderstoodException, RefuseException {
+
+            getResultadoUltimaBusqueda().clear();
+
             System.out.println("Peticion recibida 2");
             ACLMessage respuesta=cfp.createReply();
             respuesta.setPerformative(ACLMessage.PROPOSE);
@@ -141,32 +213,25 @@ public class ProveedorDeDocumentos extends Agent {
 
         @Override
         protected ACLMessage prepareResultNotification(ACLMessage cfp, ACLMessage propose, ACLMessage accept) throws FailureException {
-            Proveer consulta=new Proveer();
-            ACLMessage respuesta=accept.createReply();
-            respuesta.setPerformative(ACLMessage.INFORM);
-            try
-            {
-                consulta=(Proveer)cfp.getContentObject();
+    
+            ACLMessage reply=accept.createReply();
+            reply.setPerformative(ACLMessage.INFORM);
+
+            Resultado aEnviar = new Resultado(resultadoUltimaBusqueda);
+     
+            try {
+                myAgent.getContentManager().fillContent(reply, aEnviar);
+            } catch (CodecException ex) {
+                Logger.getLogger(ProveedorDeDocumentos.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (OntologyException ex) {
+                Logger.getLogger(ProveedorDeDocumentos.class.getName()).log(Level.SEVERE, null, ex);
             }
-            catch(UnreadableException e)
-            {
-                e.printStackTrace();
-            }
-            Resultado resultado=new Resultado(busqueda(consulta.getKeywords()));
-            try
-            {
-                myAgent.getContentManager().fillContent(respuesta, resultado);
-            }
-            catch(OntologyException e)
-            {
-                e.printStackTrace();
-            }
-            catch(CodecException e)
-            {
-                e.printStackTrace();
-            }
-            return respuesta;
+
+            return reply;
         }
+
+    
+
 
         
    

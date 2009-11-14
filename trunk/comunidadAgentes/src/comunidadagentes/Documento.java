@@ -2,15 +2,21 @@ package comunidadagentes;
 import jade.content.Concept;
 import jade.util.leap.ArrayList;
 import jade.util.leap.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public final class Documento implements Concept {
 
 	private String titulo;	
 	private String autor;
-        private String contenido;
+    private String contenido;
 	private List categorias;
+
+    private Map<String,Double> puntajes = new HashMap<String, Double>();
+
 	public Documento() {
-		super();		
+		super();
+    
 	}	
 	
 	/**
@@ -21,6 +27,7 @@ public final class Documento implements Concept {
 		this.autor=autor;
                 this.contenido=contenido;
         this.categorias = new ArrayList();
+   
         }
        
         public void setAutor(String autor) {
@@ -54,8 +61,23 @@ public final class Documento implements Concept {
 
     public Boolean esCategoria(String categoria)
     {
-        return categorias.contains(categoria);
+        return puntajes.containsKey(categoria);
     }
+
+        public void addPuntajeAPalabra(String palabra, Double punjate)
+    {
+        if(puntajes.get(palabra)==null)
+        {
+            puntajes.put(palabra, punjate);
+
+            assert get(palabra) == punjate;
+        }
+    }
+
+    public Double get(Object key) {
+        return puntajes.get(key);
+    }
+    
         
 
 }

@@ -22,6 +22,7 @@ public class Autos extends Agent {
         ServiceDescription servicio = new ServiceDescription();
         servicio.setType("Autos");
         servicio.setName("Venta de coches");
+        servicio.addOntologies(DocumentoOntology.class.getName());
 
         DFAgentDescription descripcion = new DFAgentDescription();
         descripcion.setName(getAID());
