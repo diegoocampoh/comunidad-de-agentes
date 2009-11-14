@@ -1,21 +1,8 @@
 package comunidadagentes;
-import jade.core.Agent;
-import jade.domain.DFService;
-import jade.domain.FIPAException;
-import jade.domain.FIPANames;
-import jade.domain.FIPAAgentManagement.DFAgentDescription;
-import jade.domain.FIPAAgentManagement.FailureException;
-import jade.domain.FIPAAgentManagement.NotUnderstoodException;
-import jade.domain.FIPAAgentManagement.RefuseException;
-import jade.domain.FIPAAgentManagement.ServiceDescription;
-import jade.lang.acl.ACLMessage;
-import jade.lang.acl.MessageTemplate;
-import jade.proto.ContractNetResponder;
 import jade.core.Profile;
 import jade.core.ProfileImpl;
 import jade.core.Runtime;
 import jade.util.leap.ArrayList;
-import jade.util.leap.List;
 import jade.wrapper.AgentContainer;
 import jade.wrapper.AgentController;
 import jade.wrapper.ControllerException;
@@ -42,6 +29,8 @@ public class Main {
 		Runtime.instance().setCloseVM(true);
 
 		AgentContainer container = Runtime.instance().createMainContainer(profile);
+    
+
 
 		try {
 			container.start();
@@ -66,6 +55,10 @@ public class Main {
 
 
 
+
+
+
+
 		} catch (StaleProxyException e) {
 			e.printStackTrace();
 		} catch (ControllerException e) {
@@ -78,8 +71,15 @@ public class Main {
 
         ProveedorDeDocumentos proveedor = new ProveedorDeDocumentos("Fruta");
         proveedor.agregarDocumento(new Documento("Fruteando", "Rover", "NULL"));
-        
-        proveedor.agregarDocumento(new Documento("Fruteando reloaded", "Rover and Cia.", "NULL"));
+
+        Documento stub = new Documento("Fruteando reloaded", "Rover and Cia.", "NULL");
+        stub.addPuntajeAPalabra("FRUTA", 100d);
+
+        Documento stub2 = new Documento("Carloten y sus sueños depravados con Floppy", "Rover and Cia.", "NULL");
+        stub2.addPuntajeAPalabra("FRUTA", 50d);
+
+        proveedor.agregarDocumento(stub2);
+        proveedor.agregarDocumento(stub);
 
         return proveedor;
 

@@ -7,6 +7,9 @@ package comunidadagentes;
 
 import jade.content.Concept;
 import jade.content.ContentElement;
+import jade.content.Predicate;
+import jade.content.abs.AbsContentElement;
+import jade.content.abs.AbsObject;
 import jade.util.leap.ArrayList;
 import jade.util.leap.List;
 
@@ -14,7 +17,7 @@ import jade.util.leap.List;
  *
  * @author Diego
  */
-public class Resultado implements Concept, ContentElement{
+public class Resultado implements Predicate{
 
     private List documentos;
 
@@ -31,7 +34,11 @@ public class Resultado implements Concept, ContentElement{
     }
 
     Resultado(List busqueda) {
-        this.documentos = busqueda;
+        
+        this.documentos = new ArrayList(busqueda.size());
+		for (int i = 0; i < busqueda.size(); i++) {
+			this.documentos.add(busqueda.get(i));
+		}
     }
 
     public List getDocumentos() {
@@ -41,6 +48,35 @@ public class Resultado implements Concept, ContentElement{
     public void setDocumentos(List documentos) {
         this.documentos = documentos;
     }
+
+    public boolean isAContentExpression() {
+        return false;
+    }
+
+    public void setIsAContentExpression(boolean flag) {
+
+    }
+
+    public String getTypeName() {
+        return Resultado.class.getName();
+    }
+
+    public AbsObject getAbsObject(String name) {
+        return null;
+    }
+
+    public String[] getNames() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public boolean isGrounded() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public int getCount() {
+        return 1;
+    }
+
 
 
 

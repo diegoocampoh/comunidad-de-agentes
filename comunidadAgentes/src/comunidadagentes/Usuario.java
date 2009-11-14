@@ -6,7 +6,6 @@ package comunidadagentes;
  */
 
 import jade.content.lang.sl.SLCodec;
-import jade.core.AID;
 import jade.core.Agent;
 import jade.domain.DFService;
 import jade.domain.FIPANames;
@@ -43,7 +42,7 @@ public class Usuario extends Agent {
         {
 
             List frutas = new ArrayList();
-            frutas.add("Fruteando");
+            frutas.add("FRUTA");
 
             Proveer provee = new Proveer();
             provee.setKeywords(frutas);
@@ -93,7 +92,7 @@ public class Usuario extends Agent {
         
         @Override
         protected void handleAllResponses(Vector responses, Vector acceptances) {
-            int mejorOferta=0;
+            double mejorOferta=0;
             ACLMessage mensajeMejorOferta=null;
             for(Object respuestaObject:responses)
             {
@@ -110,7 +109,7 @@ public class Usuario extends Agent {
                 }
                 String ofertaString=respuesta.getContent();
 
-                int oferta=Integer.getInteger(ofertaString);
+                double oferta=Integer.parseInt(ofertaString);
                 if(oferta>mejorOferta)
                 {
                     mejorOferta=oferta;
@@ -128,10 +127,11 @@ public class Usuario extends Agent {
             Resultado informe=null;
             try
             {
-                informe=(Resultado) inform.getContentObject();
+                informe=(Resultado) getContentManager().extractContent(inform);
             }
             catch(Exception e)
             {
+                
                 e.printStackTrace();
             }
             List papers=informe.getDocumentos();

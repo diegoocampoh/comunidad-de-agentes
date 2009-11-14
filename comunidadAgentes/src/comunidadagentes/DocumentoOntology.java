@@ -1,5 +1,4 @@
 package comunidadagentes;
-import jade.content.lang.sl.SL0Vocabulary;
 //import jade.content.lang.sl.SL1Vocabulary;
 import jade.content.onto.BasicOntology;
 import jade.content.onto.Ontology;
@@ -10,7 +9,6 @@ import jade.content.schema.ConceptSchema;
 import jade.content.schema.ObjectSchema;
 import jade.content.schema.PredicateSchema;
 import jade.content.schema.PrimitiveSchema;
-import java.lang.String;
 
 
 public final class DocumentoOntology extends Ontology implements DocumentoInterfazVocabulario{
@@ -31,7 +29,7 @@ public final class DocumentoOntology extends Ontology implements DocumentoInterf
 		try {			
 			//define un nuevo concepto
 			add(new ConceptSchema(DOCUMENTO), Documento.class);
-            add(new ConceptSchema(RESULTADO), Resultado.class);
+            add(new PredicateSchema(RESULTADO), Resultado.class);
 
             add(new PredicateSchema(PROVEER), Proveer.class);
 			//add(new PredicateSchema(PROVEE), Provee.class);
@@ -54,7 +52,7 @@ public final class DocumentoOntology extends Ontology implements DocumentoInterf
 					(PrimitiveSchema) getSchema(BasicOntology.STRING),
 					1, ObjectSchema.UNLIMITED);
 
-            ConceptSchema resultado = (ConceptSchema) getSchema(RESULTADO);
+            PredicateSchema resultado = (PredicateSchema) getSchema(RESULTADO);
             resultado.add(RESULTADO_DOCS, (ConceptSchema) getSchema(DOCUMENTO),
                     1, ObjectSchema.UNLIMITED);
 
