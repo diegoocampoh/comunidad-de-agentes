@@ -42,7 +42,7 @@ public class Usuario extends Agent {
         {
 
             List frutas = new ArrayList();
-            frutas.add("FRUTA");
+            frutas.add("texto");
 
             Proveer provee = new Proveer();
             provee.setKeywords(frutas);
@@ -54,6 +54,8 @@ public class Usuario extends Agent {
             plantilla.setProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET);
            
             DFAgentDescription[] resultados=DFService.search(this, descripcion);
+
+            
  
             if(resultados.length>0)
             {
@@ -138,7 +140,7 @@ public class Usuario extends Agent {
             
             for (int i = 0; i < papers.size(); i++) {
                 Documento doc = (Documento)papers.get(i);
-                System.out.println(doc.getTitulo());
+                System.out.println(doc);
             }
                 
             
